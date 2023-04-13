@@ -21,7 +21,7 @@ export default function routes() {
     const id = request.params.id;
     const patient = schema.patients.find(id);
     const body = JSON.parse(request.requestBody);
-    return patient.update(body);
+    return patient.update(body.params);
   });
 
   this.delete(`/patients/:id`, function (schema, request) {
