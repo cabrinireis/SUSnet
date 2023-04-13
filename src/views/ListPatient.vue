@@ -1,0 +1,159 @@
+<template>
+  <v-main>
+    <div class="pa-5">
+      <template>
+        <v-row justify="end">
+          <v-col cols="6">
+            <v-text-field
+              class="input-search"
+              flat
+              appendIcon="mdi-magnify"
+              v-model="search"
+              label="Buscar..."
+              hide-details
+              single-line
+              dense
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              :headers="headers"
+              :items="list"
+              :items-per-page="10"
+              class="elevation-1 app-list"
+              :item-key="'id'"
+              :item-class="() => classrow"
+              :footer-props="{
+                'items-per-page-text': 'Items por Página',
+              }"
+            >
+              <template #[`item.phone`]="{ item }">
+                <td>{{ item.phone }}</td>
+              </template>
+              <template #[`item.actions`]="{ item }">
+                <v-icon
+                  small
+                  class="mr-2"
+                  data-test="update"
+                  @click="edit(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+                <v-icon small data-test="delete" @click="remove(item)">
+                  mdi-delete
+                </v-icon>
+              </template>
+            </v-data-table>
+          </v-col>
+        </v-row>
+        <v-dialog v-if="active" v-model="active" width="800">
+          <app-form :dataform="formEdit" :mode="mode" @close="close" />
+        </v-dialog>
+      </template>
+    </div>
+  </v-main>
+</template>
+
+<script>
+import { mapState, mapActions } from "vuex";
+export default {
+  components: {
+    AppForm: () => import("@/components/FormPatient"),
+  },
+  data() {
+    return {
+      search: "",
+      users: [],
+      classrow: "",
+      mode: "",
+      dialog: false,
+      formEdit: {},
+      headers: [
+        {
+          text: "Nome do pasciente",
+          width: "30%",
+          value: "name",
+        },
+        { text: "Nome da mãe", value: "motherName" },
+        { text: "CPF", value: "phone" },
+        { text: "CNS", value: "cns" },
+        {
+          text: "Ações",
+          value: "actions",
+          sortable: false,
+          align: "center",
+          width: "150",
+        },
+      ],
+    };
+  },
+  methods: {
+    remove(remove) {
+      this.mode = "remove";
+      this.formEdit = remove;
+      this.$store.commit("SET_MODAL", true);
+    },
+    edit(edit) {
+      this.mode = "edit";
+      this.formEdit = edit;
+      this.$store.commit("SET_MODAL", true);
+    },
+
+    close() {
+      this.formEdit = null;
+      this.$store.commit("SET_MODAL", false);
+    },
+
+    ...mapActions({
+      getList: "GET_CONTACT",
+    }),
+  },
+  watch: {
+    search(val) {
+      this.$store.dispatch("GET_CONTACT", val);
+    },
+    notification(val) {
+      if (val) {
+        this.classrow = "classrow";
+      }
+    },
+  },
+  computed: {
+    ...mapState({
+      notification: (state) => state.notification.active,
+      active: (state) => state.modalActive,
+      list: (state) => state.contactList,
+    }),
+  },
+  created() {
+    this.getList();
+    if (this.notification) this.classrow = "classrow";
+  },
+};
+</script>
+<style lang="scss">
+.app-list {
+  tbody {
+    tr:hover {
+      cursor: pointer;
+      background-color: #fff3f2 !important;
+    }
+  }
+}
+tbody .classrow:last-child {
+  background: #fce97f;
+  animation: fadeBackground 10s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeBackground {
+  from {
+    background-color: #fff3f2;
+  }
+  to {
+    background-color: #ffff;
+  }
+}
+</style>
