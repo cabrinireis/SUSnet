@@ -48,7 +48,7 @@
             </v-data-table>
           </v-col>
         </v-row>
-        <v-dialog v-if="active" v-model="active" width="800">
+        <v-dialog v-if="dialogActive" v-model="dialogActive" width="800">
           <app-form :dataform="formEdit" :mode="mode" @close="close" />
         </v-dialog>
       </template>
@@ -64,6 +64,7 @@ export default {
   },
   data() {
     return {
+      dialogActive: false,
       search: "",
       users: [],
       classrow: "",
@@ -93,17 +94,17 @@ export default {
     remove(remove) {
       this.mode = "remove";
       this.formEdit = remove;
-      this.$store.commit("SET_MODAL", true);
+      this.dialogActive = true;
     },
     edit(edit) {
       this.mode = "edit";
       this.formEdit = edit;
-      this.$store.commit("SET_MODAL", true);
+      this.dialogActive = true;
     },
 
     close() {
       this.formEdit = null;
-      this.$store.commit("SET_MODAL", false);
+      this.dialogActive = false;
     },
 
     ...mapActions({

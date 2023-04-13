@@ -25,9 +25,6 @@ export default new Vuex.Store({
       sessionStorage.setItem("loggerUser", JSON.stringify(val));
       state.user = val;
     },
-    SET_MODAL(state, val) {
-      state.modalActive = val;
-    },
     SET_PATIENT(state, data) {
       state.patientList = data;
     },
@@ -89,8 +86,6 @@ export default new Vuex.Store({
               active: true,
               text: "Contato editado com sucesso.",
             });
-            commit("SET_MODAL", false);
-
             dispatch("GET_PATIENT");
           }
         })
@@ -109,8 +104,6 @@ export default new Vuex.Store({
               active: true,
               text: "Contato Excluido com sucesso.",
             });
-            commit("SET_MODAL", false);
-
             dispatch("GET_PATIENT");
           }
         })
