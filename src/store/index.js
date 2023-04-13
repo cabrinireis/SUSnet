@@ -10,7 +10,7 @@ const setError = {
 export default new Vuex.Store({
   state: {
     modalActive: false,
-    contactList: [],
+    patientList: [],
     notification: {
       active: false,
       text: "Exemple",
@@ -19,16 +19,20 @@ export default new Vuex.Store({
   },
   getters: {},
   mutations: {
+    SET_USER(state, val) {
+      state.user = val;
+    },
     SET_MODAL(state, val) {
       state.modalActive = val;
     },
-    SET_CONTACT(state, data) {
-      state.contactList = data;
+    SET_PATIENT(state, data) {
+      state.patientList = data;
     },
-    SET_CONTACTS(state, data) {
-      state.contactList = data;
+    SET_PATIENTS(state, data) {
+      state.patientList = data;
     },
     SET_NOTIFICATION(state, notify) {
+      console.log(notify);
       // state.notification.type = "error";
       // state.notification.active = true;
       // state.notification.text = text;z
@@ -36,8 +40,28 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    async LOGIN({ commit }, value) {
+      await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify(value),
+      })
+        .then((res) => {
+          if (res) {
+            commit("SET_NOTIFICATION", {
+              type: "success",
+              active: true,
+              text: "Seja bem vindo(a).",
+            });
+            commit("SET_USER", res);
+          }
+        })
+        .catch((error) => {
+          commit("NOTIFICATION", setError);
+          console.log(error);
+        });
+    },
     async SAVE({ commit, dispatch }, value) {
-      await fetch("/api/contacts/", {
+      await fetch("/api/patients/", {
         method: "POST",
         body: JSON.stringify(value),
       })
@@ -51,7 +75,7 @@ export default new Vuex.Store({
             if (router.currentRoute.name === "home") {
               router.push("/list");
             } else {
-              dispatch("GET_CONTACT");
+              dispatch("GET_PATIENT");
             }
           }
         })
@@ -61,7 +85,7 @@ export default new Vuex.Store({
         });
     },
     async UPDATE({ commit, dispatch }, value) {
-      await fetch(`/api/contacts/${value.id}`, {
+      await fetch(`/api/patients/${value.id}`, {
         method: "POST",
         body: JSON.stringify(value),
       })
@@ -74,7 +98,7 @@ export default new Vuex.Store({
             });
             commit("SET_MODAL", false);
 
-            dispatch("GET_CONTACT");
+            dispatch("GET_PATIENT");
           }
         })
         .catch((error) => {
@@ -83,7 +107,7 @@ export default new Vuex.Store({
         });
     },
     DELETE({ commit, dispatch }, value) {
-      fetch(`/api/contacts/${value.id}`, {
+      fetch(`/api/patients/${value.id}`, {
         method: "DELETE",
         body: JSON.stringify(value),
       })
@@ -96,7 +120,7 @@ export default new Vuex.Store({
             });
             commit("SET_MODAL", false);
 
-            dispatch("GET_CONTACT");
+            dispatch("GET_PATIENT");
           }
         })
         .catch((error) => {
@@ -104,8 +128,8 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
-    async GET_CONTACT({ commit }, state) {
-      let url = "/api/contacts";
+    async GET_PATIENT({ commit }, state) {
+      let url = "/api/patients";
       const params = {
         query: state,
       };
@@ -115,8 +139,8 @@ export default new Vuex.Store({
           : url;
       await fetch(urlPaarams)
         .then((response) => {
-          const contacts = JSON.parse(response._bodyText);
-          commit("SET_CONTACTS", contacts.contacts);
+          const res = JSON.parse(response._bodyText);
+          commit("SET_PATIENTS", res.patients);
         })
         .catch((error) => {
           commit("SET_NOTIFICATION", setError);

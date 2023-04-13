@@ -10,16 +10,16 @@
         </router-link>
       </div>
       <v-spacer></v-spacer>
+      <v-alert
+        class="app-notification"
+        v-if="notification.active"
+        prominent
+        :type="notification.type"
+      >
+        {{ notification.text }}
+      </v-alert>
     </v-app-bar>
-    <v-alert
-      class="app-notification"
-      v-if="notification.active"
-      shaped
-      prominent
-      :type="notification.type"
-    >
-      {{ notification.text }}
-    </v-alert>
+
     <v-main class="pa-0">
       <router-view />
     </v-main>

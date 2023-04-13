@@ -107,12 +107,12 @@ export default {
     },
 
     ...mapActions({
-      getList: "GET_CONTACT",
+      getList: "GET_PATIENT",
     }),
   },
   watch: {
     search(val) {
-      this.$store.dispatch("GET_CONTACT", val);
+      this.$store.dispatch("GET_PATIENT", val);
     },
     notification(val) {
       if (val) {
@@ -124,7 +124,7 @@ export default {
     ...mapState({
       notification: (state) => state.notification.active,
       active: (state) => state.modalActive,
-      list: (state) => state.contactList,
+      list: (state) => state.patientList,
     }),
   },
   created() {

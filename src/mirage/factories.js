@@ -9,7 +9,7 @@ const photoUrl = [
   "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjF8fHBlc3NvYXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
 ];
 export default {
-  contact: Factory.extend({
+  patient: Factory.extend({
     name() {
       return faker.name.fullName();
     },

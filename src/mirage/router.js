@@ -1,31 +1,46 @@
+import { Response } from "miragejs";
+
 export default function routes() {
   this.namespace = "api";
 
-  this.get("/contacts", function (schema, request) {
+  this.get("/patients", function (schema, request) {
     const query = request.queryParams.query;
-    const data = schema.contacts.all();
+    const data = schema.patients.all();
     let filter = data.filter((q) => {
       return q.name.toLowerCase().includes(query);
     });
 
-    return query !== undefined ? filter : schema.contacts.all();
+    return query !== undefined ? filter : schema.patients.all();
   });
 
-  this.post("/contacts/", function (schema, request) {
+  this.post("/patients/", function (schema, request) {
     const data = JSON.parse(request.requestBody);
-    return schema.contacts.create(data);
+    return schema.patients.create(data);
   });
 
-  this.post(`/contacts/:id`, function (schema, request) {
+  this.post(`/patients/:id`, function (schema, request) {
     const id = request.params.id;
-    const contact = schema.contacts.find(id);
+    const patient = schema.patients.find(id);
     const body = JSON.parse(request.requestBody);
-    return contact.update(body);
+    return patient.update(body);
   });
 
-  this.delete(`/contacts/:id`, function (schema, request) {
+  this.delete(`/patients/:id`, function (schema, request) {
     const id = request.params.id;
-    const item = schema.contacts.find(id);
+    const item = schema.patients.find(id);
     return item.destroy();
+  });
+
+  this.post(`/login`, function (schema, request) {
+    const body = JSON.parse(request.requestBody);
+    if (body.user === "OM30" && body.pass === 123) {
+      return true;
+    } else {
+      return new Response(
+        400,
+        { some: "header" },
+        { errors: ["name cannot be blank"] }
+      );
+    }
   });
 }
