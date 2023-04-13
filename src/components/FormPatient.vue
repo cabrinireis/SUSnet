@@ -189,6 +189,8 @@ export default {
       active: false,
       url: null,
       image: null,
+      // cns: "898004836435848",
+      cns: "1234567890123456",
       form: {
         src: "",
         name: "",
@@ -232,6 +234,30 @@ export default {
           : true;
       }
     },
+    validarCNS() {
+      let cns = this.form.cns;
+      // Verifica se o CNS tem 15 dígitos
+      if (cns.length !== 15) {
+        return false;
+      }
+
+      //const cnsSemDV = cns.substring(0, 14);
+      //const dv = parseInt(cns.charAt(14));
+
+      // Calcula o dígito verificador
+      let soma = 0;
+      for (let i = 0; i < 15; i++) {
+        let peso = 15 - i;
+        soma += parseInt(cns.charAt(i)) * peso;
+      }
+
+      let resto = soma % 11;
+      if (resto != 0) {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
   mounted() {
     if (this.mode === "edit") this.form = { ...this.dataform };
@@ -253,6 +279,8 @@ export default {
       }
     },
     close() {
+      const num = "701200076607217";
+      this.validarCNS(num);
       this.$emit("close");
     },
   },
