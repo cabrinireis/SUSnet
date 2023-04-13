@@ -34,4 +34,10 @@ const router = new VueRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const logged = JSON.parse(sessionStorage.getItem("loggerUser"));
+  if (to.name !== "home" && !logged) next({ name: "home" });
+  else next();
+});
+
 export default router;

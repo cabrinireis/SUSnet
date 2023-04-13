@@ -1,5 +1,4 @@
 import { Response } from "miragejs";
-
 export default function routes() {
   this.namespace = "api";
 
@@ -34,7 +33,7 @@ export default function routes() {
   this.post(`/login`, function (schema, request) {
     const body = JSON.parse(request.requestBody);
     if (body.user === "OM30" && body.pass === 123) {
-      return true;
+      return body;
     } else {
       return new Response(
         400,

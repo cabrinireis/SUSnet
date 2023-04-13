@@ -40,18 +40,28 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
       login: {
         user: "OM30",
-        pass: 1234,
+        pass: 123,
       },
     };
   },
+  computed: {
+    ...mapState({
+      user: (state) => state.user,
+    }),
+  },
   methods: {
-    onLogin() {
-      this.$store.dispatch("LOGIN", this.login);
+    async onLogin() {
+      await this.$store.dispatch("LOGIN", this.login);
+      if (this.user) {
+        this.$router.push("/list");
+      }
     },
   },
 };

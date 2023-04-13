@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from "axios";
 import router from "../router";
 Vue.use(Vuex);
 const setError = {
@@ -11,6 +12,7 @@ export default new Vuex.Store({
   state: {
     modalActive: false,
     patientList: [],
+    user: null,
     notification: {
       active: false,
       text: "Exemple",
@@ -20,6 +22,7 @@ export default new Vuex.Store({
   getters: {},
   mutations: {
     SET_USER(state, val) {
+      sessionStorage.setItem("loggerUser", JSON.stringify(val));
       state.user = val;
     },
     SET_MODAL(state, val) {
@@ -32,19 +35,13 @@ export default new Vuex.Store({
       state.patientList = data;
     },
     SET_NOTIFICATION(state, notify) {
-      console.log(notify);
-      // state.notification.type = "error";
-      // state.notification.active = true;
-      // state.notification.text = text;z
       state.notification = { ...notify };
     },
   },
   actions: {
     async LOGIN({ commit }, value) {
-      await fetch("/api/login", {
-        method: "POST",
-        body: JSON.stringify(value),
-      })
+      await axios
+        .post("/api/login", value)
         .then((res) => {
           if (res) {
             commit("SET_NOTIFICATION", {
@@ -52,19 +49,17 @@ export default new Vuex.Store({
               active: true,
               text: "Seja bem vindo(a).",
             });
-            commit("SET_USER", res);
+            commit("SET_USER", res.data);
           }
         })
         .catch((error) => {
-          commit("NOTIFICATION", setError);
+          commit("SET_NOTIFICATION", setError);
           console.log(error);
         });
     },
     async SAVE({ commit, dispatch }, value) {
-      await fetch("/api/patients/", {
-        method: "POST",
-        body: JSON.stringify(value),
-      })
+      await axios
+        .post("/api/patients/", value)
         .then((res) => {
           if (res) {
             commit("SET_NOTIFICATION", {
@@ -85,10 +80,8 @@ export default new Vuex.Store({
         });
     },
     async UPDATE({ commit, dispatch }, value) {
-      await fetch(`/api/patients/${value.id}`, {
-        method: "POST",
-        body: JSON.stringify(value),
-      })
+      await axios
+        .post(`/api/patients/${value.id}`, { params: value })
         .then((res) => {
           if (res) {
             commit("SET_NOTIFICATION", {
@@ -107,10 +100,8 @@ export default new Vuex.Store({
         });
     },
     DELETE({ commit, dispatch }, value) {
-      fetch(`/api/patients/${value.id}`, {
-        method: "DELETE",
-        body: JSON.stringify(value),
-      })
+      axios
+        .delete(`/api/patients/${value.id}`)
         .then((res) => {
           if (res) {
             commit("SET_NOTIFICATION", {
