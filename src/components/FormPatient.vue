@@ -206,9 +206,7 @@
 <script>
 import { mapState } from "vuex";
 import { required, minLength, numeric } from "vuelidate/lib/validators";
-import { validationMessages } from "@/ultils/index";
 export default {
-  mixins: [validationMessages()],
   props: {
     dataform: {
       type: Object,

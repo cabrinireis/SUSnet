@@ -47,7 +47,12 @@
             </v-data-table>
           </v-col>
         </v-row>
-        <v-dialog v-if="dialogActive" v-model="dialogActive" width="800">
+        <v-dialog
+          v-if="dialogActive"
+          v-model="dialogActive"
+          width="800"
+          persistent
+        >
           <app-form :dataform="formEdit" :mode="mode" @close="close" />
         </v-dialog>
       </template>
@@ -111,10 +116,9 @@ export default {
     },
 
     close() {
-      this.formEdit = null;
+      this.formEdit = {};
       this.dialogActive = false;
     },
-
     ...mapActions({
       getList: "GET_PATIENT",
     }),
