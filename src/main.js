@@ -4,7 +4,8 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { makeServer } from "./mirage/index";
-
+import VueMask from "v-mask";
+Vue.use(VueMask);
 if (process.env.NODE_ENV === "development") {
   makeServer();
 }

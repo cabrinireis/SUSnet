@@ -13,6 +13,7 @@ export default new Vuex.Store({
     modalActive: false,
     patientList: [],
     user: null,
+    adress: null,
     notification: {
       active: false,
       text: "Exemple",
@@ -33,6 +34,14 @@ export default new Vuex.Store({
     },
     SET_NOTIFICATION(state, notify) {
       state.notification = { ...notify };
+    },
+    SET_CEP(state, value) {
+      state.adress = {
+        city: value.localidade,
+        state: value.uf,
+        ville: value.bairro,
+        addr: value.logradouro,
+      };
     },
   },
   actions: {
@@ -130,6 +139,17 @@ export default new Vuex.Store({
           commit("SET_NOTIFICATION", setError);
           console.log(error);
         });
+    },
+    async GET_CEP({ commit }, cep) {
+      const baseUrl = "https://viacep.com.br/ws/";
+      const url = `${baseUrl}${cep.replace(/\D/g, "")}/json/`;
+      const response = await fetch(url);
+      const responseJson = await response.json();
+      if (responseJson.erro) {
+        commit("SET_NOTIFICATION", setError);
+      } else {
+        commit("SET_CEP", responseJson);
+      }
     },
   },
   modules: {},

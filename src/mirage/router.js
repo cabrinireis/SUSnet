@@ -42,4 +42,5 @@ export default function routes() {
       );
     }
   });
+  this.passthrough("https://viacep.com.br/ws/**");
 }

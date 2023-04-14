@@ -31,8 +31,8 @@ export default {
     cns() {
       return faker.helpers.replaceSymbolWithNumber("###############");
     },
+    cep: "74922-330",
     adress: {
-      cep: 74922330,
       adress: "",
       city: "",
       state: "",

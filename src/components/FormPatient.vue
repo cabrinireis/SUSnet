@@ -52,13 +52,34 @@
               </v-col>
               <v-col class="text-left" cols="12" sm="12" md="12">
                 <label> Data de Nascimento*</label>
-                <v-text-field
-                  v-model="form.birthday"
-                  dense
-                  outlined
-                  hide-details
-                  single-line
-                ></v-text-field>
+                <v-menu
+                  ref="menu1"
+                  v-model="menu1"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="form.birthday"
+                      label="Date"
+                      v-mask="'##/###/###-##'"
+                      v-bind="attrs"
+                      v-on="on"
+                      dense
+                      outlined
+                      hide-details
+                      single-line
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="date"
+                    no-title
+                    @input="menu1 = false"
+                  ></v-date-picker>
+                </v-menu>
               </v-col>
             </v-col>
           </v-row>
@@ -67,6 +88,7 @@
               <label>CPF*</label>
               <v-text-field
                 v-model="form.cpf"
+                v-mask="'###.###.###-##'"
                 dense
                 outlined
                 hide-details
@@ -74,7 +96,7 @@
               ></v-text-field>
             </v-col>
             <v-col class="text-left" cols="6">
-              <label>CNS*(cartão nacional de saúde, com validação)</label>
+              <label>CNS*(cartão nacional de saúde)</label>
               <v-text-field
                 v-model="form.cns"
                 dense
@@ -91,9 +113,10 @@
             <v-col class="text-left" cols="4">
               <label>CEP</label>
               <v-text-field
-                v-model="form.adress.cep"
+                v-model="form.cep"
                 type="email"
                 dense
+                v-mask="'#####-###'"
                 outlined
                 hide-details
                 single-line
@@ -173,6 +196,8 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
+
 export default {
   props: {
     dataform: {
@@ -186,19 +211,23 @@ export default {
   },
   data() {
     return {
+      date: "",
+      menu1: false,
       active: false,
       url: null,
       image: null,
       // cns: "898004836435848",
+      cep: "",
+      response: null,
       cns: "1234567890123456",
       form: {
         src: "",
         name: "",
         phone: "",
         photo_url: null,
+        cep: "",
+        birthday: "",
         adress: {
-          cep: 74922330,
-          adress: "",
           city: "",
           state: "",
           ville: "",
@@ -213,15 +242,25 @@ export default {
     };
   },
   watch: {
-    "form.phone"() {
-      let v = this.form.phone;
-      v = v.replace(/\D/g, "");
-      v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-      v = v.replace(/(\d)(\d{4})$/, "$1-$2");
-      return (this.form.phone = v);
+    date() {
+      this.form.birthday = this.formatDate(this.date);
+    },
+    adress(val) {
+      if (val) {
+        console.log(val);
+        this.form.adress = { ...val };
+      }
+    },
+    "form.cep"(val) {
+      if (val.length === 9) {
+        this.getCep(val);
+      } else this.response = null;
     },
   },
   computed: {
+    ...mapState({
+      adress: (state) => state.adress,
+    }),
     setTitle() {
       return this.filter?.[this.mode] || this.filter?.["new"];
     },
@@ -263,8 +302,16 @@ export default {
     if (this.mode === "edit") this.form = { ...this.dataform };
   },
   methods: {
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
+    getCep(cep) {
+      this.$store.dispatch("GET_CEP", cep);
+    },
     Preview_image() {
-      console.log(this.$refs.file.$refs.input);
       this.form.photo_url = URL.createObjectURL(this.image);
     },
     action() {

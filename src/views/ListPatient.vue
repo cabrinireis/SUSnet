@@ -2,7 +2,10 @@
   <v-main>
     <div class="pa-5">
       <template>
-        <v-row justify="end">
+        <v-row justify="space-between">
+          <v-col cols="4">
+            <v-btn color="secondary" @click="onCreate">Cadastrar</v-btn>
+          </v-col>
           <v-col cols="6">
             <v-text-field
               class="input-search"
@@ -94,6 +97,10 @@ export default {
     remove(remove) {
       this.mode = "remove";
       this.formEdit = remove;
+      this.dialogActive = true;
+    },
+    onCreate() {
+      this.mode = "create";
       this.dialogActive = true;
     },
     edit(edit) {
