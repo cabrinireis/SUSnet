@@ -81,7 +81,7 @@ export default new Vuex.Store({
           }
         })
         .catch((error) => {
-          commit("NOTIFICATION", setError);
+          commit("SET_NOTIFICATION", setError);
           console.log(error);
         });
     },
@@ -99,7 +99,7 @@ export default new Vuex.Store({
           }
         })
         .catch((error) => {
-          commit("NOTIFICATION", setError);
+          commit("SET_NOTIFICATION", setError);
           console.log(error);
         });
     },
@@ -117,7 +117,7 @@ export default new Vuex.Store({
           }
         })
         .catch((error) => {
-          commit("NOTIFICATION", setError);
+          commit("SET_NOTIFICATION", setError);
           console.log(error);
         });
     },
@@ -141,6 +141,7 @@ export default new Vuex.Store({
         });
     },
     async GET_CEP({ commit }, cep) {
+      // axios not suport passthrough the miragejs
       const baseUrl = "https://viacep.com.br/ws/";
       const url = `${baseUrl}${cep.replace(/\D/g, "")}/json/`;
       const response = await fetch(url);
