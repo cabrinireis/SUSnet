@@ -36,17 +36,13 @@
                 <td>{{ item.phone }}</td>
               </template>
               <template #[`item.actions`]="{ item }">
-                <v-icon
-                  small
-                  class="mr-2"
-                  data-test="update"
-                  @click="edit(item)"
-                >
+                <v-icon small class="mr-2" @click="read(item)">
+                  mdi-eye
+                </v-icon>
+                <v-icon small class="mr-2" @click="edit(item)">
                   mdi-pencil
                 </v-icon>
-                <v-icon small data-test="delete" @click="remove(item)">
-                  mdi-delete
-                </v-icon>
+                <v-icon small @click="remove(item)"> mdi-delete </v-icon>
               </template>
             </v-data-table>
           </v-col>
@@ -106,6 +102,11 @@ export default {
     edit(edit) {
       this.mode = "edit";
       this.formEdit = edit;
+      this.dialogActive = true;
+    },
+    read(read) {
+      this.mode = "read";
+      this.formEdit = read;
       this.dialogActive = true;
     },
 

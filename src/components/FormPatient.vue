@@ -10,15 +10,28 @@
         <v-container v-if="mode !== 'remove'">
           <v-row>
             <v-col class="text-left" cols="6">
-              <label> Foto*</label>
+              <label> Foto* </label>
               <v-img
                 :src="form.photo_url"
                 width="100%"
-                height="200"
+                height="300px"
                 class="preview"
-              ></v-img>
-              <div class="upload">
-                <v-btn block @click="$refs.file.$refs.input.click()">add</v-btn>
+                @error="getErrors('photo_url', $v.form.photo_url)"
+              >
+              </v-img>
+              <span
+                class="text-left red--text ml-4"
+                v-if="!getErrors('photo_url', $v.form.photo_url)"
+              >
+                Foto obrigatória
+              </span>
+              <div class="upload" v-if="mode !== 'read'">
+                <v-btn
+                  color="secondary"
+                  block
+                  @click="$refs.file.$refs.input.click()"
+                  >Adicionar Foto</v-btn
+                >
                 <v-file-input
                   ref="file"
                   v-show="false"
@@ -36,8 +49,8 @@
                   v-model="form.name"
                   dense
                   outlined
-                  hide-details
-                  single-line
+                  :readonly="readonly"
+                  :error-messages="getErrors('name', $v.form.name)"
                 ></v-text-field>
               </v-col>
               <v-col class="text-left" cols="12" sm="12" md="12">
@@ -46,8 +59,8 @@
                   v-model="form.motherName"
                   dense
                   outlined
-                  hide-details
-                  single-line
+                  :readonly="readonly"
+                  :error-messages="getErrors('motherName', $v.form.motherName)"
                 ></v-text-field>
               </v-col>
               <v-col class="text-left" cols="12" sm="12" md="12">
@@ -64,14 +77,13 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="form.birthday"
-                      label="Date"
                       v-mask="'##/###/###-##'"
                       v-bind="attrs"
                       v-on="on"
                       dense
                       outlined
-                      hide-details
-                      single-line
+                      :readonly="readonly"
+                      :error-messages="getErrors('birthday', $v.form.birthday)"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -91,8 +103,8 @@
                 v-mask="'###.###.###-##'"
                 dense
                 outlined
-                hide-details
-                single-line
+                :readonly="readonly"
+                :error-messages="getErrors('cpf', $v.form.cpf)"
               ></v-text-field>
             </v-col>
             <v-col class="text-left" cols="6">
@@ -101,8 +113,8 @@
                 v-model="form.cns"
                 dense
                 outlined
-                hide-details
-                single-line
+                :readonly="readonly"
+                :error-messages="getErrors('cns', $v.form.cns)"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -114,45 +126,42 @@
               <label>CEP</label>
               <v-text-field
                 v-model="form.cep"
-                type="email"
                 dense
+                max-leng
                 v-mask="'#####-###'"
                 outlined
-                hide-details
-                single-line
+                :readonly="readonly"
+                :error-messages="getErrors('cep', $v.form.cep)"
               ></v-text-field>
             </v-col>
             <v-col class="text-left" cols="5">
               <label>Cidade</label>
               <v-text-field
                 v-model="form.adress.city"
-                type="email"
                 dense
                 outlined
-                hide-details
-                single-line
+                :readonly="readonly"
+                :error-messages="getErrors('city', $v.form.adress.city)"
               ></v-text-field>
             </v-col>
             <v-col class="text-left" cols="3">
               <label>Estado</label>
               <v-text-field
                 v-model="form.adress.state"
-                type="email"
                 dense
                 outlined
-                hide-details
-                single-line
+                :readonly="readonly"
+                :error-messages="getErrors('state', $v.form.adress.state)"
               ></v-text-field>
             </v-col>
             <v-col class="text-left" cols="6">
               <label>Bairro</label>
               <v-text-field
                 v-model="form.adress.ville"
-                type="email"
                 dense
                 outlined
-                hide-details
-                single-line
+                :readonly="readonly"
+                :error-messages="getErrors('ville', $v.form.adress.ville)"
               ></v-text-field>
             </v-col>
 
@@ -160,17 +169,16 @@
               <label>Endereço</label>
               <v-text-field
                 v-model="form.adress.addr"
-                type="email"
                 dense
                 outlined
-                hide-details
-                single-line
+                :readonly="readonly"
+                :error-messages="getErrors('addr', $v.form.adress.addr)"
               ></v-text-field>
             </v-col>
           </v-row>
         </v-container>
         <v-container v-else class="text-left pt-0 pb-13">
-          <span>Deseja realmente excluir o contato?</span>
+          <h3 class="orange--text">Deseja realmente excluir este Registro?</h3>
         </v-container>
       </v-card-text>
 
@@ -182,11 +190,11 @@
           Cancelar
         </v-btn>
         <v-btn
+          :disabled="readonly"
           class="app-btnSave"
           color="error"
           light
           rounded
-          :disabled="valid"
           @click="action"
         >
           {{ mode === "remove" ? "Excluir" : "Salvar" }}
@@ -197,8 +205,10 @@
 </template>
 <script>
 import { mapState } from "vuex";
-
+import { required, minLength, numeric } from "vuelidate/lib/validators";
+import { validationMessages } from "@/ultils/index";
 export default {
+  mixins: [validationMessages()],
   props: {
     dataform: {
       type: Object,
@@ -206,24 +216,24 @@ export default {
     },
     mode: {
       type: String,
-      default: "",
+      default: "read",
     },
   },
   data() {
     return {
+      photo_urlValid: false,
       date: "",
       menu1: false,
       active: false,
       url: null,
       image: null,
-      // cns: "898004836435848",
       cep: "",
       response: null,
-      cns: "1234567890123456",
       form: {
+        cns: "",
         src: "",
         name: "",
-        phone: "",
+        motherName: "",
         photo_url: null,
         cep: "",
         birthday: "",
@@ -235,11 +245,31 @@ export default {
         },
       },
       filter: {
-        edit: "Editar contato",
-        remove: "Excluir contato",
-        new: "Criar novo contato",
+        edit: "Editar Paciente",
+        remove: "Excluir Paciente",
+        new: "Cadastrar novo Paciente",
       },
     };
+  },
+  validations: {
+    form: {
+      name: { required },
+      motherName: { required },
+      birthday: { required },
+      photo_url: { required },
+      cpf: {
+        required,
+        minLength: minLength(14),
+      },
+      cns: { required, minLength: minLength(15), numeric },
+      cep: { required, minLength: minLength(9) },
+      adress: {
+        city: { required },
+        state: { required },
+        ville: { required },
+        addr: { required },
+      },
+    },
   },
   watch: {
     date() {
@@ -247,7 +277,6 @@ export default {
     },
     adress(val) {
       if (val) {
-        console.log(val);
         this.form.adress = { ...val };
       }
     },
@@ -261,17 +290,11 @@ export default {
     ...mapState({
       adress: (state) => state.adress,
     }),
+    readonly() {
+      return this.mode === "read";
+    },
     setTitle() {
       return this.filter?.[this.mode] || this.filter?.["new"];
-    },
-    valid() {
-      if (this.mode === "remove") {
-        return false;
-      } else {
-        return this.form.name || this.form.email || this.form.phone
-          ? false
-          : true;
-      }
     },
     validarCNS() {
       let cns = this.form.cns;
@@ -299,12 +322,56 @@ export default {
     },
   },
   mounted() {
-    if (this.mode === "edit") this.form = { ...this.dataform };
+    this.form = { ...this.dataform };
   },
   methods: {
+    getErrors(name, model) {
+      const isRequired = "é obrigatório";
+      const errors = [];
+      if (!model.$dirty) return errors;
+      switch (name) {
+        case "name":
+          !model.required && errors.push(`name ${isRequired}`);
+          break;
+        case "motherName":
+          !model.required && errors.push(`nome da mae ${isRequired}`);
+          break;
+        case "birthday":
+          !model.required && errors.push(`Data ${isRequired}`);
+          break;
+        case "cpf":
+          !model.minLength && errors.push(`CPF incompleto`);
+          !model.required && errors.push(`CPF ${isRequired}`);
+          break;
+        case "cns":
+          if (!this.validarCNS) errors.push(`CNS inválido`);
+          !model.numeric && errors.push(`CNS deve ser numérico`);
+          !model.minLength && errors.push(`CNS incompleto`);
+          !model.required && errors.push(`CNS ${isRequired}`);
+          break;
+        case "cep":
+          !model.minLength && errors.push(`CEP incompleto`);
+          !model.required && errors.push(`CEP ${isRequired}`);
+          break;
+        case "city":
+          !model.required && errors.push(`Cidade ${isRequired}`);
+          break;
+        case "state":
+          !model.required && errors.push(`Estado ${isRequired}`);
+          break;
+        case "ville":
+          !model.required && errors.push(`Cidade ${isRequired}`);
+          break;
+        case "addr":
+          !model.required && errors.push(`Endereço ${isRequired}`);
+          break;
+        default:
+          break;
+      }
+      return errors[0];
+    },
     formatDate(date) {
       if (!date) return null;
-
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
@@ -321,13 +388,13 @@ export default {
       } else if (this.mode === "remove") {
         this.$store.dispatch("DELETE", this.dataform);
       } else {
+        this.$v.$touch();
+        if (this.$v.$invalid) return;
         this.$store.dispatch("SAVE", this.form);
         this.$emit("close");
       }
     },
     close() {
-      const num = "701200076607217";
-      this.validarCNS(num);
       this.$emit("close");
     },
   },

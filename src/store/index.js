@@ -71,7 +71,7 @@ export default new Vuex.Store({
             commit("SET_NOTIFICATION", {
               type: "success",
               active: true,
-              text: "Contato adicionado com sucesso.",
+              text: "Paciente adicionado com sucesso.",
             });
             if (router.currentRoute.name === "home") {
               router.push("/list");
@@ -93,7 +93,7 @@ export default new Vuex.Store({
             commit("SET_NOTIFICATION", {
               type: "success",
               active: true,
-              text: "Contato editado com sucesso.",
+              text: "Paciente editado com sucesso.",
             });
             dispatch("GET_PATIENT");
           }
@@ -111,7 +111,7 @@ export default new Vuex.Store({
             commit("SET_NOTIFICATION", {
               type: "success",
               active: true,
-              text: "Contato Excluido com sucesso.",
+              text: "Paciente Excluido com sucesso.",
             });
             dispatch("GET_PATIENT");
           }
