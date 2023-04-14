@@ -417,9 +417,4 @@ export default {
     margin-left: 12px !important;
   }
 }
-.app-ModalTitle {
-  color: $text-dark !important;
-  font-size: 16px !important;
-  font-weight: normal;
-}
 </style>

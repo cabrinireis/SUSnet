@@ -1,13 +1,12 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <router-link to="/">
-          <div class="d-flex align-center">
-            <v-icon x-large color="whith darken-4"> mdi-book-open </v-icon>
-            <h3 class="ml-3 white--text">SUSnet</h3>
-          </div>
-        </router-link>
+      <div class="d-flex header align-center justify-space-between">
+        <div class="d-flex align-center">
+          <v-icon x-large color="whith darken-4"> mdi-book-open </v-icon>
+          <h3 class="ml-3 white--text">SUSnet</h3>
+        </div>
+        <div class="white--text">Sair</div>
       </div>
       <v-spacer></v-spacer>
       <v-alert
@@ -51,16 +50,13 @@ export default {
 };
 </script>
 <style lang="scss">
-a {
-  text-decoration: none;
+.header {
+  width: 100%;
 }
 .app-notification {
   width: 300px;
   display: flex;
   right: 0;
   position: absolute;
-}
-.app-container {
-  background-color: #f8f9fd !important;
 }
 </style>
