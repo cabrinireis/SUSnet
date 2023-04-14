@@ -6,7 +6,9 @@
           <v-icon x-large color="whith darken-4"> mdi-book-open </v-icon>
           <h3 class="ml-3 white--text">SUSnet</h3>
         </div>
-        <div class="white--text">Sair</div>
+        <div class="white--text">
+          <v-btn text outlined @click="onLogout()">Sair</v-btn>
+        </div>
       </div>
       <v-spacer></v-spacer>
       <v-alert
@@ -45,6 +47,12 @@ export default {
       } else {
         clearTimeout(temp);
       }
+    },
+  },
+  methods: {
+    onLogout() {
+      sessionStorage.removeItem("loggerUser");
+      this.$router.push("/");
     },
   },
 };
