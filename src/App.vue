@@ -51,6 +51,9 @@ export default {
 };
 </script>
 <style lang="scss">
+a {
+  text-decoration: none;
+}
 .app-notification {
   width: 300px;
   display: flex;
