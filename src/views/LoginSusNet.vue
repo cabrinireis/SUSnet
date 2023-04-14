@@ -46,8 +46,8 @@ export default {
   data() {
     return {
       login: {
-        user: "OM30",
-        pass: 123,
+        user: "",
+        pass: "",
       },
     };
   },

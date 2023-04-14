@@ -1,5 +1,12 @@
 # sus_net
+um Crud de pasciente com permissoes e validacoes.
+base de dados com Miragejs
 
+## Login
+```
+Login: 0M30 
+Pass: 123
+```
 ## Project setup
 ```
 yarn install

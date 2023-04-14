@@ -32,7 +32,7 @@ export default function routes() {
 
   this.post(`/login`, function (schema, request) {
     const body = JSON.parse(request.requestBody);
-    if (body.user === "OM30" && body.pass === 123) {
+    if (body.user === "OM30" && body.pass === "123") {
       return body;
     } else {
       return new Response(
